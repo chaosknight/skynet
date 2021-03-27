@@ -2,10 +2,11 @@ package cell
 
 import (
 	"log"
-	"skynet/data"
-	"skynet/perceptron"
-	"skynet/types"
-	"skynet/util"
+
+	"github.com/chaosknight/skynet/data"
+	"github.com/chaosknight/skynet/perceptron"
+	"github.com/chaosknight/skynet/types"
+	"github.com/chaosknight/skynet/util"
 )
 
 type simpleai struct {

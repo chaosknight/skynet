@@ -1,7 +1,7 @@
 package data
 
 import (
-	"skynet/util"
+	"github.com/chaosknight/skynet/util"
 )
 
 // 一条数据样本

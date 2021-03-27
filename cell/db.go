@@ -3,7 +3,7 @@ package cell
 import (
 	"log"
 
-	"skynet/types"
+	"github.com/chaosknight/skynet/types"
 )
 
 const DBCellName = "kvdb"

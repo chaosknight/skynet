@@ -4,9 +4,10 @@ import (
 	"log"
 	"math"
 	"math/rand"
-	"skynet/data"
-	"skynet/util"
 	"time"
+
+	"github.com/chaosknight/skynet/data"
+	"github.com/chaosknight/skynet/util"
 )
 
 type Perceptron struct {
