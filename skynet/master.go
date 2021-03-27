@@ -2,7 +2,8 @@ package skynet
 
 import (
 	"log"
-	"skynet/types"
+
+	"github.com/chaosknight/skynet/types"
 )
 
 func (skynet *SkyNet) masterWorker() {

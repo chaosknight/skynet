@@ -5,8 +5,9 @@ import (
 	// "fmt"
 	"log"
 	"runtime"
-	"skynet/types"
 	"sync/atomic"
+
+	"github.com/chaosknight/skynet/types"
 )
 
 type SkyNet struct {

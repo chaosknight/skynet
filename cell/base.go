@@ -3,7 +3,8 @@ package cell
 import (
 	"log"
 	"reflect"
-	"skynet/types"
+
+	"github.com/chaosknight/skynet/types"
 )
 
 type BaseCell struct {
