@@ -5,12 +5,12 @@ import (
 )
 
 var (
-	defaultMasterBufferLength = uint(100000)
+	defaultMasterBufferLength = uint(10000)
 )
 
 type SkyNetInitOptions struct {
 	MasterBufferLength uint
-	MasterSize         int
+	WorkerSize         int
 }
 
 func (options *SkyNetInitOptions) Init() {
@@ -18,7 +18,7 @@ func (options *SkyNetInitOptions) Init() {
 		options.MasterBufferLength = defaultMasterBufferLength
 	}
 
-	if options.MasterSize == 0 {
-		options.MasterSize = runtime.NumCPU()
+	if options.WorkerSize == 0 {
+		options.WorkerSize = runtime.NumCPU()
 	}
 }
