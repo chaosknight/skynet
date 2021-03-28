@@ -72,7 +72,7 @@ func (cell *BaseCell) CellChanel() chan types.MasterMsg {
 	return cell.mchan
 }
 
-func NewCell(name string, size uint) types.Cell {
+func NewCell(name string, size uint) *BaseCell {
 	ce := &BaseCell{name: name, size: size}
 	return ce
 }
