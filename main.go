@@ -10,8 +10,8 @@ import (
 func main() {
 	skynet := skynet.SkyNet{}
 	skynet.Init(types.SkyNetInitOptions{})
-	skynet.Rigist(cell.NewAICell("ai", uint(100)), 1)
-	skynet.Rigist(cell.NewDBCell(uint(20)), 1)
+	skynet.Rigist(cell.NewAICell("ai", uint(100)), 0)
+	skynet.Rigist(cell.NewDBCell(uint(20)), 0)
 
 	// skynet.Rigist(cell.NewMCTreeCell("db", uint(100)), 4)
 	// skynet.Rigist(cell.NewCardsCell("cards", uint(100)), 4)

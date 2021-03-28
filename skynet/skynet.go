@@ -19,6 +19,7 @@ type SkyNet struct {
 	callindex    uint64
 	msgcount     uint64
 	repChanels   sync.Map
+	workerSize   int
 }
 
 func (skynet *SkyNet) Init(options types.SkyNetInitOptions) {
@@ -34,16 +35,18 @@ func (skynet *SkyNet) Init(options types.SkyNetInitOptions) {
 	skynet.callindex = 0
 	skynet.msgcount = 0
 	skynet.initialized = true
+	skynet.workerSize = options.WorkerSize
 	skynet.cells = make(map[string]types.Cell)
 	skynet.masterChanel = make(chan types.MasterMsg, options.MasterBufferLength)
 	skynet.fullChanel = make(chan types.MasterMsg, options.MasterBufferLength)
-	for shard := 0; shard < options.MasterSize; shard++ {
-		go skynet.masterWorker()
-	}
+	go skynet.masterWorker()
 
 }
 
 func (skynet *SkyNet) Rigist(cell types.Cell, threadsize int) {
+	if threadsize == 0 {
+		threadsize = skynet.workerSize
+	}
 	cell.Init(skynet)
 	name := cell.GetName()
 	_, ok := skynet.cells[name]
