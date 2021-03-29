@@ -9,6 +9,8 @@ import (
 	"github.com/chaosknight/skynet/util"
 )
 
+const CellAIName = "cellai"
+
 type simpleai struct {
 	BaseCell
 	perceptron  *perceptron.Perceptron

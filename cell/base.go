@@ -27,7 +27,7 @@ func (cell *BaseCell) Command(k string, fun interface{}) {
 }
 
 func (cell *BaseCell) Ping(msg string) string {
-	log.Println(name, " cell recive :", msg)
+	log.Println(cell.name, " cell recive :", msg)
 	return msg
 }
 
