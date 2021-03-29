@@ -19,10 +19,16 @@ func (cell *BaseCell) Init(skynet types.SkyNetInterface) {
 	cell.mchan = make(chan types.MasterMsg, cell.size)
 	cell.cmd = make(map[string]interface{})
 	cell.skynet = skynet
+	cell.Command("Ping", cell.Ping)
 }
 
 func (cell *BaseCell) Command(k string, fun interface{}) {
 	cell.cmd[k] = fun
+}
+
+func (cell *BaseCell) Ping(msg string) string {
+	log.Println(name, " cell recive :", msg)
+	return msg
 }
 
 func (cell *BaseCell) Worker() interface{} {
