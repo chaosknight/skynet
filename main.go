@@ -10,8 +10,7 @@ import (
 func main() {
 	skynet := skynet.SkyNet{}
 	skynet.Init(types.SkyNetInitOptions{})
-	skynet.Rigist(cell.NewAICell("ai", uint(100)), 0)
-	skynet.Rigist(cell.NewDBCell(uint(20)), 0)
+	skynet.Rigist(cell.NewAICell(cell.CellAIName, uint(100)), 0)
 
 	// skynet.Rigist(cell.NewMCTreeCell("db", uint(100)), 4)
 	// skynet.Rigist(cell.NewCardsCell("cards", uint(100)), 4)
@@ -32,6 +31,6 @@ func main() {
 	// v.SetValues([]float64{0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0})
 	// skynet.Call("ai", "ForwardPass", v)
 
-	skynet.SendMsg(cell.DBCellName, "Ping")
+	skynet.SendMsg(cell.CellAIName, "Ping", "hellow")
 	skynet.FlushMsg()
 }
