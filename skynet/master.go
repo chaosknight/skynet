@@ -11,7 +11,6 @@ func (skynet *SkyNet) masterWorker() {
 		msg := <-skynet.masterChanel
 		chanel := skynet.getCellChanel(msg.Sid)
 		if chanel != nil {
-			log.Println("456446")
 			chanel <- msg
 		}
 
