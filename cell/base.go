@@ -11,19 +11,31 @@ type BaseCell struct {
 	name   string
 	size   uint
 	mchan  chan types.MasterMsg
-	cmd    map[string]interface{}
+	cmd    map[string]reflect.Value
 	skynet types.SkyNetInterface
 }
 
-func (cell *BaseCell) Init(skynet types.SkyNetInterface) {
+func (cell *BaseCell) Init(skynet types.SkyNetInterface, ccell types.Cell) {
 	cell.mchan = make(chan types.MasterMsg, cell.size)
-	cell.cmd = make(map[string]interface{})
+	cell.cmd = make(map[string]reflect.Value)
 	cell.skynet = skynet
-	cell.Command("Ping", cell.Ping)
+	cell.command(ccell)
+
 }
 
-func (cell *BaseCell) Command(k string, fun interface{}) {
-	cell.cmd[k] = fun
+func (cell *BaseCell) command(c types.Cell) {
+	value := reflect.ValueOf(c)
+	typ := value.Type()
+	for i := 0; i < value.NumMethod(); i++ {
+		switch typ.Method(i).Name {
+		case "Init":
+		case "Worker":
+			break
+		default:
+			cell.cmd[typ.Method(i).Name] = value.Method(i)
+		}
+
+	}
 }
 
 func (cell *BaseCell) Ping(msg string) string {
@@ -48,12 +60,12 @@ func (cell *BaseCell) Worker() interface{} {
 	}
 }
 
-func invoke(fun interface{}, args ...interface{}) interface{} {
+func invoke(fun reflect.Value, args ...interface{}) interface{} {
 	inputs := make([]reflect.Value, len(args))
 	for i, _ := range args {
 		inputs[i] = reflect.ValueOf(args[i])
 	}
-	f := reflect.ValueOf(fun)
+	f := fun
 
 	v := f.Call(inputs)
 	result := []interface{}{}
