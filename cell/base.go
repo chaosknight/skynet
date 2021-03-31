@@ -38,6 +38,10 @@ func (cell *BaseCell) command(c types.Cell) {
 	}
 }
 
+func (cell *BaseCell) GetSkynet() types.SkyNetInterface {
+	return cell.skynet
+}
+
 func (cell *BaseCell) Ping(msg string) string {
 	log.Println(cell.name, " cell recive :", msg)
 	return msg
