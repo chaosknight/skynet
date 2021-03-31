@@ -21,4 +21,5 @@ type Cell interface {
 	GetName() string
 	CellSize() uint
 	CellChanel() chan MasterMsg
+	GetSkynet() SkyNetInterface
 }

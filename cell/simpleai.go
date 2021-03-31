@@ -24,11 +24,11 @@ func (db *simpleai) Init(skynet types.SkyNetInterface) {
 	db.BaseCell.Init(skynet, db)
 	db.initialized = true
 	db.perceptron = perceptron.MakePerceptron(10000)
-
 }
 
 func (db *simpleai) Train(set data.InmemDataset) {
 	db.perceptron.Train(set)
+
 }
 
 func (db *simpleai) ForwardPass(x *util.Vector) (sum float64) {
