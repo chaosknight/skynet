@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/chaosknight/skynet/skynet"
 	"github.com/chaosknight/skynet/types"
 
@@ -10,7 +12,7 @@ import (
 func main() {
 	skynet := skynet.SkyNet{}
 	skynet.Init(types.SkyNetInitOptions{})
-	skynet.Rigist(cell.NewAICell(cell.CellAIName, uint(100)), 0)
+	skynet.Rigist(cell.NewAICell(cell.CellAIName, uint(100)), 1)
 
 	// skynet.Rigist(cell.NewMCTreeCell("db", uint(100)), 4)
 	// skynet.Rigist(cell.NewCardsCell("cards", uint(100)), 4)
@@ -30,7 +32,10 @@ func main() {
 	// v := util.NewVector(16)
 	// v.SetValues([]float64{0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0})
 	// skynet.Call("ai", "ForwardPass", v)
-
-	skynet.SendMsg(cell.CellAIName, "Ping", "hellow")
+	skynet.SendMsg(cell.CellAIName, "Ping", "569")
+	skynet.SendMsg(cell.CellAIName, "Ping", "569")
+	v := skynet.Call(cell.CellAIName, "Ping", "hellow")
+	skynet.SendMsg(cell.CellAIName, "Ping", "569")
+	log.Println("ddd", v)
 	skynet.FlushMsg()
 }

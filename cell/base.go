@@ -10,13 +10,13 @@ import (
 type BaseCell struct {
 	name   string
 	size   uint
-	mchan  chan types.MasterMsg
+	mchan  chan *types.MasterMsg
 	cmd    map[string]reflect.Value
 	skynet types.SkyNetInterface
 }
 
 func (cell *BaseCell) Init(skynet types.SkyNetInterface, ccell types.Cell) {
-	cell.mchan = make(chan types.MasterMsg, cell.size)
+	cell.mchan = make(chan *types.MasterMsg, cell.size)
 	cell.cmd = make(map[string]reflect.Value)
 	cell.skynet = skynet
 	cell.command(ccell)
@@ -50,15 +50,15 @@ func (cell *BaseCell) Ping(msg string) string {
 func (cell *BaseCell) Worker() interface{} {
 	for {
 		msg := <-cell.mchan
-		log.Println("处理消息:", msg)
+		log.Println("处理消息:", *msg)
 		fun, ok := cell.cmd[msg.Cmd]
 		if ok {
 			result := invoke(fun, msg.Args...)
 			log.Println("结果:", result)
-			cell.skynet.ReturnResult(msg.Rep, result)
+			cell.skynet.ReturnResult(msg, result)
 		} else {
 			log.Fatal("Command ", msg.Cmd, " is not found ")
-			cell.skynet.ReturnResult(msg.Rep, 0)
+			cell.skynet.ReturnResult(msg, 0)
 		}
 
 	}
@@ -90,7 +90,7 @@ func (cell *BaseCell) GetName() string {
 func (cell *BaseCell) CellSize() uint {
 	return cell.size
 }
-func (cell *BaseCell) CellChanel() chan types.MasterMsg {
+func (cell *BaseCell) CellChanel() chan *types.MasterMsg {
 	return cell.mchan
 }
 

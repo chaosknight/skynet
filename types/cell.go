@@ -3,10 +3,10 @@ package types
 type SkyNetInterface interface {
 	SendMsg(cellname string, cmd string, msgs ...interface{})
 	Call(cellname string, cmd string, msgs ...interface{}) interface{}
-	ReturnResult(cid uint64, result interface{})
+	ReturnResult(msg *MasterMsg, result interface{})
 }
 type MasterMsg struct {
-	Rep  uint64
+	Rep  chan interface{}
 	Sid  string
 	Cmd  string
 	Args []interface{}
@@ -20,6 +20,6 @@ type Cell interface {
 	Worker() interface{}
 	GetName() string
 	CellSize() uint
-	CellChanel() chan MasterMsg
+	CellChanel() chan *MasterMsg
 	GetSkynet() SkyNetInterface
 }

@@ -1,8 +1,6 @@
 package skynet
 
 import (
-	"sync"
-	// "fmt"
 	"log"
 	"runtime"
 	"sync/atomic"
@@ -13,12 +11,10 @@ import (
 type SkyNet struct {
 	initialized  bool
 	initOptions  types.SkyNetInitOptions
-	masterChanel chan types.MasterMsg
-	fullChanel   chan types.MasterMsg
+	masterChanel chan *types.MasterMsg
 	cells        map[string]types.Cell
 	callindex    uint64
 	msgcount     uint64
-	repChanels   sync.Map
 	workerSize   int
 }
 
@@ -37,8 +33,7 @@ func (skynet *SkyNet) Init(options types.SkyNetInitOptions) {
 	skynet.initialized = true
 	skynet.workerSize = options.WorkerSize
 	skynet.cells = make(map[string]types.Cell)
-	skynet.masterChanel = make(chan types.MasterMsg, options.MasterBufferLength)
-	skynet.fullChanel = make(chan types.MasterMsg, options.MasterBufferLength)
+	skynet.masterChanel = make(chan *types.MasterMsg, options.MasterBufferLength)
 	go skynet.masterWorker()
 
 }
@@ -63,29 +58,25 @@ func (skynet *SkyNet) Rigist(cell types.Cell, threadsize int) {
 }
 
 func (skynet *SkyNet) SendMsg(cellname string, cmd string, msgs ...interface{}) {
-	skynet.send(false, cellname, cmd, msgs)
+	skynet.send(nil, cellname, cmd, msgs)
 }
 
 func (skynet *SkyNet) Call(cellname string, cmd string, msgs ...interface{}) interface{} {
 	c := make(chan interface{})
-	rid := skynet.send(true, cellname, cmd, msgs)
-	if rid == 0 {
+	ok := skynet.send(c, cellname, cmd, msgs)
+	if ok == 0 {
 		return uint64(0)
 	}
-	skynet.repChanels.Store(rid, c)
 	result := <-c
 	return result
 }
 
-func (skynet *SkyNet) ReturnResult(cid uint64, result interface{}) {
-	if cid > 0 {
-		c, _ := skynet.repChanels.Load(cid)
-		skynet.repChanels.Delete(cid)
-		if cc, ok := c.(chan interface{}); ok {
-			cc <- result
-		}
+func (skynet *SkyNet) ReturnResult(msg *types.MasterMsg, result interface{}) {
 
+	if msg.Rep != nil {
+		msg.Rep <- result
 	}
+
 	u := atomic.AddUint64(&skynet.msgcount, 1)
 	if u == 0 {
 		u = atomic.AddUint64(&skynet.msgcount, 1)
@@ -93,18 +84,13 @@ func (skynet *SkyNet) ReturnResult(cid uint64, result interface{}) {
 
 }
 
-func (skynet *SkyNet) send(iscall bool, cellname string, cmd string, msgs []interface{}) uint64 {
+func (skynet *SkyNet) send(cc chan interface{}, cellname string, cmd string, msgs []interface{}) uint64 {
 	if uint(len(skynet.masterChanel)) == skynet.initOptions.MasterBufferLength {
 		log.Println(" masterChanel 已经过载")
 		return uint64(0)
 	}
-
 	rid := skynet.nowindexid()
-
-	if !iscall {
-		rid = uint64(0)
-	}
-	skynet.masterChanel <- types.MasterMsg{Rep: rid, Sid: cellname, Cmd: cmd, Args: msgs}
+	skynet.masterChanel <- &types.MasterMsg{Rep: cc, Sid: cellname, Cmd: cmd, Args: msgs}
 	return rid
 }
 

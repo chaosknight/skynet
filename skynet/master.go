@@ -17,7 +17,7 @@ func (skynet *SkyNet) masterWorker() {
 	}
 }
 
-func (skynet *SkyNet) getCellChanel(name string) chan types.MasterMsg {
+func (skynet *SkyNet) getCellChanel(name string) chan *types.MasterMsg {
 	v, ok := skynet.cells[name]
 	if ok {
 		return v.CellChanel()
