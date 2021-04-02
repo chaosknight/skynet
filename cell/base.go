@@ -50,11 +50,9 @@ func (cell *BaseCell) Ping(msg string) string {
 func (cell *BaseCell) Worker() interface{} {
 	for {
 		msg := <-cell.mchan
-		log.Println("处理消息:", *msg)
 		fun, ok := cell.cmd[msg.Cmd]
 		if ok {
 			result := invoke(fun, msg.Args...)
-			log.Println("结果:", result)
 			cell.skynet.ReturnResult(msg, result)
 		} else {
 			log.Fatal("Command ", msg.Cmd, " is not found ")
