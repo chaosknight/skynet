@@ -7,6 +7,7 @@ import (
 )
 
 func (skynet *SkyNet) masterWorker() {
+
 	for {
 		msg := <-skynet.masterChanel
 		chanel := skynet.getCellChanel(msg.Sid)

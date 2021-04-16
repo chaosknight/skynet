@@ -102,6 +102,16 @@ func (skynet *SkyNet) nowindexid() uint64 {
 	return u
 }
 
+func (skynet *SkyNet) Status() []string {
+	keys := make([]string, len(skynet.cells))
+	j := 0
+	for k := range skynet.cells {
+		keys[j] = k
+		j++
+	}
+	return keys
+}
+
 // 阻塞等待直到所有消息完毕
 func (skynet *SkyNet) FlushMsg() {
 f1:
