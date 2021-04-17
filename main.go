@@ -34,8 +34,9 @@ func main() {
 	// skynet.Call("ai", "ForwardPass", v)
 	skynet.SendMsg(cell.CellAIName, "Ping", "569")
 	skynet.SendMsg(cell.CellAIName, "Ping", "569")
-	v := skynet.Call(cell.CellAIName, "Ping", "hellow")
-	skynet.SendMsg(cell.CellAIName, "Ping", "569")
+
+	skynet.SendMsg(cell.CellAIName, "Ping")
+	v := skynet.Call(cell.CellAIName, "Ping")
 	log.Println("ddd", v)
 	skynet.FlushMsg()
 }
