@@ -58,11 +58,16 @@ func (cell *BaseCell) Worker() interface{} {
 			log.Fatal("Command ", msg.Cmd, " is not found ")
 			cell.skynet.ReturnResult(msg, 0)
 		}
-
 	}
 }
 
-func invoke(fun reflect.Value, args ...interface{}) interface{} {
+func invoke(fun reflect.Value, args ...interface{}) (res interface{}) {
+	defer func() {
+		if x := recover(); x != nil {
+			log.Println("call work error", x)
+			res = nil
+		}
+	}()
 	inputs := make([]reflect.Value, len(args))
 	for i, _ := range args {
 		inputs[i] = reflect.ValueOf(args[i])
