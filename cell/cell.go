@@ -7,7 +7,7 @@ import (
 	"github.com/chaosknight/skynet/types"
 )
 
-type BaseCell struct {
+type Cell struct {
 	name   string
 	size   uint
 	mchan  chan *types.MasterMsg
@@ -15,15 +15,15 @@ type BaseCell struct {
 	skynet types.SkyNetInterface
 }
 
-func (cell *BaseCell) Init(skynet types.SkyNetInterface, ccell types.Cell) {
+func (cell *Cell) Init(skynet types.SkyNetInterface) {
 	cell.mchan = make(chan *types.MasterMsg, cell.size)
 	cell.cmd = make(map[string]reflect.Value)
 	cell.skynet = skynet
-	cell.command(ccell)
+	cell.command(cell)
 
 }
 
-func (cell *BaseCell) command(c types.Cell) {
+func (cell *Cell) command(c types.Cell) {
 	value := reflect.ValueOf(c)
 	typ := value.Type()
 	for i := 0; i < value.NumMethod(); i++ {
@@ -34,20 +34,21 @@ func (cell *BaseCell) command(c types.Cell) {
 		default:
 			cell.cmd[typ.Method(i).Name] = value.Method(i)
 		}
+		// log.Println(typ.Method(i).Name)
 
 	}
 }
 
-func (cell *BaseCell) GetSkynet() types.SkyNetInterface {
+func (cell *Cell) GetSkynet() types.SkyNetInterface {
 	return cell.skynet
 }
 
-func (cell *BaseCell) Ping(msg string) string {
+func (cell *Cell) Ping(msg string) string {
 	log.Println(cell.name, " cell recive :", msg)
 	return msg
 }
 
-func (cell *BaseCell) Worker() interface{} {
+func (cell *Cell) Worker() interface{} {
 	for {
 		msg := <-cell.mchan
 		fun, ok := cell.cmd[msg.Cmd]
@@ -87,17 +88,17 @@ func invoke(fun reflect.Value, args ...interface{}) (res interface{}) {
 	return nil
 }
 
-func (cell *BaseCell) GetName() string {
+func (cell *Cell) GetName() string {
 	return cell.name
 }
-func (cell *BaseCell) CellSize() uint {
+func (cell *Cell) CellSize() uint {
 	return cell.size
 }
-func (cell *BaseCell) CellChanel() chan *types.MasterMsg {
+func (cell *Cell) CellChanel() chan *types.MasterMsg {
 	return cell.mchan
 }
 
-func NewCell(name string, size uint) *BaseCell {
-	ce := &BaseCell{name: name, size: size}
+func GO(name string, size uint) *Cell {
+	ce := &Cell{name: name, size: size}
 	return ce
 }
