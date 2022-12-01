@@ -49,7 +49,6 @@ func (skynet *SkyNet) Rigist(cell types.Cell, threadsize int) {
 		log.Println(name, " cell 已经加载,请勿重复加载")
 	} else {
 		skynet.cells[name] = cell
-
 		for i := 0; i < threadsize; i++ {
 			go cell.Worker()
 		}
