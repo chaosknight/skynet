@@ -12,8 +12,8 @@ type Scal struct {
 	cell.Cell
 }
 
-func NewScal() *Scal {
-	ce := cell.GO(cellScalName, 10)
+func NewScal(isdebug bool) *Scal {
+	ce := cell.GO(cellScalName, 10, isdebug)
 	return &Scal{
 		Cell: *ce,
 		id:   0,

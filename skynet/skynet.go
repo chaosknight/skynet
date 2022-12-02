@@ -16,6 +16,7 @@ type SkyNet struct {
 	callindex    uint64
 	msgcount     uint64
 	workerSize   int
+	isdebug      bool
 }
 
 func (skynet *SkyNet) Init(options types.SkyNetInitOptions) {
@@ -31,6 +32,7 @@ func (skynet *SkyNet) Init(options types.SkyNetInitOptions) {
 	skynet.callindex = 0
 	skynet.msgcount = 0
 	skynet.initialized = true
+	skynet.isdebug = options.IsDebug
 	skynet.workerSize = options.WorkerSize
 	skynet.cells = make(map[string]types.Cell)
 	skynet.masterChanel = make(chan *types.MasterMsg, options.MasterBufferLength)
