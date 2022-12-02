@@ -8,11 +8,12 @@ import (
 )
 
 type Cell struct {
-	name   string
-	size   uint
-	mchan  chan *types.MasterMsg
-	cmd    map[string]reflect.Value
-	skynet types.SkyNetInterface
+	isdebug bool
+	name    string
+	size    uint
+	mchan   chan *types.MasterMsg
+	cmd     map[string]reflect.Value
+	skynet  types.SkyNetInterface
 }
 
 func (cell *Cell) Init(skynet types.SkyNetInterface) {
@@ -34,7 +35,9 @@ func (cell *Cell) command(c types.Cell) {
 		default:
 			cell.cmd[typ.Method(i).Name] = value.Method(i)
 		}
-		// log.Println(typ.Method(i).Name)
+		if cell.isdebug {
+			log.Println(typ.Method(i).Name)
+		}
 
 	}
 }
@@ -98,7 +101,7 @@ func (cell *Cell) CellChanel() chan *types.MasterMsg {
 	return cell.mchan
 }
 
-func GO(name string, size uint) *Cell {
-	ce := &Cell{name: name, size: size}
+func GO(name string, size uint, isdebug bool) *Cell {
+	ce := &Cell{name: name, size: size, isdebug: isdebug}
 	return ce
 }

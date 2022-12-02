@@ -7,8 +7,10 @@ import (
 
 func main() {
 	skynet := skynet.SkyNet{}
-	skynet.Init(types.SkyNetInitOptions{})
-	// skynet.Rigist(NewScal(), 1)
+	skynet.Init(types.SkyNetInitOptions{
+		IsDebug: true,
+	})
+	skynet.Rigist(NewScal(true), 1)
 
 	// skynet.SendMsg(cellScalName, "Ping", "123")
 	skynet.FlushMsg()
