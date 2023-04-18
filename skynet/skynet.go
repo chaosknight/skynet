@@ -12,7 +12,7 @@ type SkyNet struct {
 	initialized  bool
 	initOptions  types.SkyNetInitOptions
 	masterChanel chan *types.MasterMsg
-	cells        map[string]types.Cell
+	cells        map[string]types.Actor
 	callindex    uint64
 	msgcount     uint64
 	workerSize   int
@@ -34,27 +34,23 @@ func (skynet *SkyNet) Init(options types.SkyNetInitOptions) {
 	skynet.initialized = true
 	skynet.isdebug = options.IsDebug
 	skynet.workerSize = options.WorkerSize
-	skynet.cells = make(map[string]types.Cell)
+	skynet.cells = make(map[string]types.Actor)
 	skynet.masterChanel = make(chan *types.MasterMsg, options.MasterBufferLength)
 	go skynet.masterWorker()
 
 }
 
-func (skynet *SkyNet) Rigist(cell types.Cell, threadsize int) {
+func (skynet *SkyNet) Rigist(cell types.Actor, threadsize int) {
 	if threadsize == 0 {
 		threadsize = skynet.workerSize
 	}
-	cell.Init(skynet)
 	name := cell.GetName()
 	_, ok := skynet.cells[name]
 	if ok {
 		log.Println(name, " cell 已经加载,请勿重复加载")
 	} else {
 		skynet.cells[name] = cell
-		for i := 0; i < threadsize; i++ {
-			go cell.Worker()
-		}
-
+		cell.SetMaster(skynet)
 	}
 }
 
@@ -72,12 +68,7 @@ func (skynet *SkyNet) Call(cellname string, cmd string, msgs ...interface{}) int
 	return result
 }
 
-func (skynet *SkyNet) ReturnResult(msg *types.MasterMsg, result interface{}) {
-
-	if msg.Rep != nil {
-		msg.Rep <- result
-	}
-
+func (skynet *SkyNet) ReducerCount(msg *types.MasterMsg) {
 	u := atomic.AddUint64(&skynet.msgcount, 1)
 	if u == 0 {
 		u = atomic.AddUint64(&skynet.msgcount, 1)
