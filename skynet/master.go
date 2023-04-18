@@ -10,20 +10,19 @@ func (skynet *SkyNet) masterWorker() {
 
 	for {
 		msg := <-skynet.masterChanel
-		chanel := skynet.getCellChanel(msg.Sid)
-		if chanel != nil {
-			chanel <- msg
+		actor := skynet.getActor(msg.Sid)
+		if actor != nil {
+			actor.Recive(msg)
 		}
-
 	}
 }
 
-func (skynet *SkyNet) getCellChanel(name string) chan *types.MasterMsg {
+func (skynet *SkyNet) getActor(name string) types.Actor {
 	v, ok := skynet.cells[name]
 	if ok {
-		return v.CellChanel()
+		return v
 	} else {
-		log.Fatal("cell ", name, " is not found ")
+		log.Fatal("actor ", name, " is not found ")
 		return nil
 	}
 
