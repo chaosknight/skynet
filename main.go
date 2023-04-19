@@ -14,7 +14,7 @@ func main() {
 		IsDebug: true,
 	})
 
-	testactor := actor.NewFromReducer("Custom", 10, func(msg *types.MasterMsg) {
+	testactor := actor.NewFromReducer("Custom", 10, func(a types.Actor, msg *types.MasterMsg) {
 		log.Println(" cell recive :", msg.Cmd, msg.Args)
 		if msg.Rep != nil {
 			msg.Rep <- "999"

@@ -19,4 +19,5 @@ type Actor interface {
 	CellChanel() chan *MasterMsg
 	Recive(msg *MasterMsg)
 	SetMaster(skynet SkyNetInterface)
+	GetSkynet() SkyNetInterface
 }

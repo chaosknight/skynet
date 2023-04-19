@@ -8,11 +8,11 @@ type reducerActor struct {
 	name    string
 	size    uint
 	mchan   chan *types.MasterMsg
-	reducer func(*types.MasterMsg)
+	reducer func(types.Actor, *types.MasterMsg)
 	skynet  types.SkyNetInterface
 }
 
-func NewFromReducer(name string, size uint, reducer func(*types.MasterMsg)) types.Actor {
+func NewFromReducer(name string, size uint, reducer func(types.Actor, *types.MasterMsg)) types.Actor {
 	ga := &reducerActor{
 		name:    name,
 		size:    size,
@@ -29,13 +29,17 @@ func (a *reducerActor) start() {
 
 func (a *reducerActor) receiveLoop() {
 	for msg := range a.mchan {
-		a.reducer(msg)
+		a.reducer(a, msg)
 		a.skynet.ReducerCount(msg)
 	}
 }
 
 func (a *reducerActor) SetMaster(skynet types.SkyNetInterface) {
 	a.skynet = skynet
+}
+
+func (a *reducerActor) GetSkynet() types.SkyNetInterface {
+	return a.skynet
 }
 
 func (a *reducerActor) Recive(msg *types.MasterMsg) {
